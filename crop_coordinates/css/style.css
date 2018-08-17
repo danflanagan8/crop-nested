@@ -1,0 +1,9 @@
+.crop-coord {
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.crop-coord.processed,
+.crop-coord.processed img {
+  transition: all 1s;
+}
