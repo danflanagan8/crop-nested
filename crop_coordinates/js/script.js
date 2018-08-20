@@ -6,7 +6,7 @@
         $img = $(this).find('img');
         $(this).css('width', $img.data('crop-width'));
         $(this).css('height', $img.data('crop-height'));
-        $img.css('transform', 'translate(' + $img.data('crop-x') + 'px, ' + $img.data('crop-y') + 'px)');
+        $img.css('transform', 'translate(-' + $img.data('crop-x') + 'px, -' + $img.data('crop-y') + 'px)');
         $(this).click(function(){
           $(this).css('width', $img.width());
           $(this).css('height', $img.height());

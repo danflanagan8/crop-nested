@@ -7,3 +7,7 @@
 .crop-coord.processed img {
   transition: all 1s;
 }
+
+.crop-coord img {
+  max-width: unset;
+}

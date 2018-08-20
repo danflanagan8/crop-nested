@@ -3,11 +3,11 @@
 /**
  * Implements hook_form_alter.
  */
-function crop_coordinates_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
-  if( $form_id == 'node_article_edit_form'){
-    $form['#validate'][] = 'crop_coordinates_nested';
-  }
-}
+// function crop_coordinates_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+//   if( $form_id == 'node_article_edit_form'){
+//     //$form['#validate'][] = 'crop_coordinates_nested';
+//   }
+// }
 
 function crop_coordinates_nested(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
   $images = $form_state->getValue('field_image');
@@ -50,13 +50,8 @@ function crop_coordinates_theme($existing, $type, $theme, $path) {
   return [
     'image_crop_coordinates' => [
       'variables' => [
-        'url' => NULL,
-        'crop' => NULL,
+        'image' => NULL,
       ],
     ],
   ];
-}
-
-function crop_coordinates_page_attachments(array &$page) {
-  $page['#attached']['library'][] = 'crop_coordinates/crop-coordinates';
 }

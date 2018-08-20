@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatter;
 use \Drupal\Core\Field\EntityReferenceFieldItemListInterface;
+use Drupal\Core\Url;
 
 /**
  * Plugin implementation of the 'image_crop_coordinates' formatter.
@@ -34,52 +35,39 @@ class CropCoordinatesFormatterBeta extends ImageFormatter {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $elements = [];
+    $elements = parent::viewElements($items, $langcode);
+    $images = $this->getEntitiesToView($items, $langcode);
 
-    /** @var \Drupal\Core\Field\EntityReferenceFieldItemListInterface $items */
-    if (empty($images = $this->getEntitiesToView($items, $langcode))) {
-      // Early opt-out if the field is empty.
-      return $elements;
-    }
     $crop_storage = \Drupal::service('entity.manager')->getStorage('crop');
     $crop_types = $crop_storage->loadMultiple();
-    $image_style = $this->imageStyleStorage->load('featured');
-    foreach ($images as $delta => $image) {
+    $index = 0;
+    foreach($elements as &$element){
+      $image = $images[$index];
       $image_uri = $image->getFileUri();
-      $url = $image_style ? $image_style->buildUrl($image_uri) : file_create_url($image_uri);
-
-      // Add cacheability metadata from the image.
-      $cacheability = CacheableMetadata::createFromObject($image);
-
-      $data = array(
-        '#theme' => 'image_crop_coordinates',
-        '#url' => $url,
-        '#crop' => array(),
-      );
-      $crops = $crops;
       foreach($crop_types as $crop_type){
-         $crop = $crop_storage->getCrop($image_uri, $crop_type->bundle());
-         if($crop){
-           $crops[$crop_type->bundle()] = array(
-             'size' => $crop->size(),
-             'position' => $crop->position(),
-           );
-         }
+        $crop = $crop_storage->getCrop($image_uri, $crop_type->bundle());
+        if($crop){
+         $crops[$crop_type->bundle()] = array(
+           'size' => $crop->size(),
+           'position' => $crop->position(),
+         );
+        }
       }
       //calculate where the thumb crop sits within the featured crop
       //The x and y values are the CENTER of the crop.
       //We calculate where the top-left corner of thumb sits relative to the
       //top-left corner of featured.
-      $data['#crop'] = array();
-      $data['#crop']['x'] = ($crops['thumb']['position']['x'] - 0.5 * $crops['thumb']['size']['width']) - ($crops['featured']['position']['x'] - 0.5*$crops['featured']['size']['width']);
-      $data['#crop']['y'] = ($crops['thumb']['position']['y'] - 0.5 * $crops['thumb']['size']['height']) - ($crops['featured']['position']['y'] - 0.5*$crops['featured']['size']['height']);
-      $data['#crop']['width'] = $crops['thumb']['size']['width'];
-      $data['#crop']['height'] = $crops['thumb']['size']['height'];
+      $element['#item_attributes']['data-crop-x'][] = ($crops['thumb']['position']['x'] - 0.5 * $crops['thumb']['size']['width']) - ($crops['featured']['position']['x'] - 0.5*$crops['featured']['size']['width']);
+      $element['#item_attributes']['data-crop-y'][] = ($crops['thumb']['position']['y'] - 0.5 * $crops['thumb']['size']['height']) - ($crops['featured']['position']['y'] - 0.5*$crops['featured']['size']['height']);
+      $element['#item_attributes']['data-crop-width'][] = $crops['thumb']['size']['width'];
+      $element['#item_attributes']['data-crop-height'][] = $crops['thumb']['size']['height'];
+      $index += 1;
 
-      $elements[$delta] = $data;
-
-      $cacheability->applyTo($elements[$delta]);
+      $element['#image'] = $element;
+      $element['#theme'] = 'image_crop_coordinates';
+      $element['#attached']['library'][] = 'crop_coordinates/crop-coordinates';
     }
+
     return $elements;
   }
 
