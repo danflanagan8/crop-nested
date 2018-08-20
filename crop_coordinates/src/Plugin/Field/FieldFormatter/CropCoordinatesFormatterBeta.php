@@ -67,9 +67,12 @@ class CropCoordinatesFormatterBeta extends ImageFormatter {
          }
       }
       //calculate where the thumb crop sits within the featured crop
+      //The x and y values are the CENTER of the crop.
+      //We calculate where the top-left corner of thumb sits relative to the
+      //top-left corner of featured.
       $data['#crop'] = array();
-      $data['#crop']['x'] = $crops['thumb']['position']['x'] - $crops['featured']['position']['x'];
-      $data['#crop']['y'] = $crops['thumb']['position']['y'] - $crops['featured']['position']['y'];
+      $data['#crop']['x'] = ($crops['thumb']['position']['x'] - 0.5 * $crops['thumb']['size']['width']) - ($crops['featured']['position']['x'] - 0.5*$crops['featured']['size']['width']);
+      $data['#crop']['y'] = ($crops['thumb']['position']['y'] - 0.5 * $crops['thumb']['size']['height']) - ($crops['featured']['position']['y'] - 0.5*$crops['featured']['size']['height']);
       $data['#crop']['width'] = $crops['thumb']['size']['width'];
       $data['#crop']['height'] = $crops['thumb']['size']['height'];
 
