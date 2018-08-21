@@ -1,0 +1,26 @@
+It's really a work in progress...
+
+As of commit f9C094d these are things for the future...
+
+==Image Styles==
+Need to add install config for the "featured" and "thumb" image styles
+and give them better names.
+
+==Crops==
+Same thing for crops.
+
+==FieldFormatter==
+Need to override the parent settings/summary so that it always uses the
+"featured" image style. Maybe need to clean up viewElements so that it
+specifically loads the "featured" and "thumb" crops instead of all crops.
+
+==FieldWidget==
+Similar to FieldFormatter. Need to override parent settings/summary so
+that it always uses the "featured" and "thumb" crops.
+
+==JS/CSS==
+Maybe need to rework things so that it is responsive. Maybe some things could
+be changed from px to percentages.
+
+==In General==
+There are lots of things that could be named better all over this module.
