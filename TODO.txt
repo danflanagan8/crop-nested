@@ -9,14 +9,29 @@ and give them better names.
 ==Crops==
 Same thing for crops.
 
+**UPDATE**: Made updates to widget and formatter such that the "nest" and "egg"
+are configurable. The expectation is that a crop has the same machine name
+as the corresponding style. If the image style changes the size of the image
+in any way other than manual crop this will break. Perhaps a sub module could
+be created that creates a set of nest/egg crop/image_styles in case someone
+wants that to happen easily.
+
 ==FieldFormatter==
 Need to override the parent settings/summary so that it always uses the
 "featured" image style. Maybe need to clean up viewElements so that it
 specifically loads the "featured" and "thumb" crops instead of all crops.
 
+**UPDATE**: Field formatter is configurable in that the nest and egg styles
+can be set in configuration.
+
 ==FieldWidget==
 Similar to FieldFormatter. Need to override parent settings/summary so
 that it always uses the "featured" and "thumb" crops.
+
+**UPDATE**: The field widget can be configured now. The user can select the nest
+and egg crops that will be validated. If the nest style is the original iamge
+then the standard imageCropWidget should be used since there is no need
+for validation.
 
 ==JS/CSS==
 Maybe need to rework things so that it is responsive. Maybe some things could
