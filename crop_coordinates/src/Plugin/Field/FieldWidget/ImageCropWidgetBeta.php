@@ -24,7 +24,7 @@ use Drupal\image_widget_crop\Plugin\Field\FieldWidget\ImageCropWidget;
  *
  * @FieldWidget(
  *   id = "image_widget_crop_beta",
- *   label = @Translation("ImageWidget crop beta"),
+ *   label = @Translation("ImageWidget crop (nesting)"),
  *   field_types = {
  *     "image"
  *   }
@@ -48,39 +48,93 @@ class ImageCropWidgetBeta extends ImageCropWidget {
     return $element;
   }
 
-  public static function validateNested(array $element, FormStateInterface $form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public static function defaultSettings() {
+    return [
+      'nest' => '',
+      'egg' => '',
+    ] + parent::defaultSettings();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element = parent::settingsForm($form, $form_state);
+    if(!$crop_types_options = $this->imageWidgetCropManager->getAvailableCropType(CropType::getCropTypeNames())){
+      return $element;
+    }
+    $element['nest'] = [
+      '#title' => $this->t('Crop Nest'),
+      '#type' => 'select',
+      '#options' => $crop_types_options,
+      '#default_value' => $this->getSetting('nest'),
+      '#multiple' => FALSE,
+      '#required' => FALSE,
+      '#description' => $this->t('The larger crop for which nesting will be validated. This crop will be required.'),
+    ];
+    $element['egg'] = [
+      '#title' => $this->t('Crop Egg'),
+      '#type' => 'select',
+      '#options' => $crop_types_options,
+      '#default_value' => $this->getSetting('egg'),
+      '#multiple' => FALSE,
+      '#required' => FALSE,
+      '#description' => $this->t('The smaller crop for which nesting will be validated. This crop will be required.'),
+    ];
+
+    return $element;
+  }
+
+  public function validateNested(array $element, FormStateInterface $form_state) {
     $images = $form_state->getValue($element['#field_name']);
     foreach ($images as $image) {
       $crops = $image['image_crop']['crop_wrapper'];
-      $featured = $crops['featured']['crop_container']['values'];
-      $thumb = $crops['thumb']['crop_container']['values'];
+      $nest = $crops[$element['#nest']]['crop_container']['values'];
+      $egg = $crops[$element['#egg']]['crop_container']['values'];
 
-      if($featured['crop_applied'] == 0){
-        $form_state->setErrorByName($element['#field_name'], t('Please select a Featured crop.'));
+      if($nest['crop_applied'] == 0){
+        $form_state->setErrorByName($element['#field_name'], t('Please select a @nest crop.', ['@nest' => $element['#nest']]));
         continue;
       }
-      if($thumb['crop_applied'] == 0){
-        $form_state->setErrorByName($element['#field_name'], t('Please select a Thumb crop.'));
+      if($egg['crop_applied'] == 0){
+        $form_state->setErrorByName($element['#field_name'], t('Please select a @egg crop.', ['@egg' => $element['#egg']]));
         continue;
       }
       //These coordinates are TOP LEFT! Not the center!
-      if($thumb['x'] < $featured['x']){
-        $form_state->setErrorByName($element['#field_name'], t('Thumb crop must be nested inside Featured crop. (left)'));
+      if($egg['x'] < $nest['x']){
+        $form_state->setErrorByName($element['#field_name'], t('@egg crop must be nested inside @nest crop.', ['@egg' => $element['#egg'], '@nest' => $element['#nest']]));
         continue;
       }
-      if($thumb['y'] < $featured['y']){
-        $form_state->setErrorByName($element['#field_name'], t('Thumb crop must be nested inside Featured crop. (top)'));
+      if($egg['y'] < $nest['y']){
+        $form_state->setErrorByName($element['#field_name'], t('@egg crop must be nested inside @nest crop.', ['@egg' => $element['#egg'], '@nest' => $element['#nest']]));
         continue;
       }
-      if($thumb['x'] + $thumb['width'] > $featured['x'] + $featured['width']){
-        $form_state->setErrorByName($element['#field_name'], t('Thumb crop must be nested inside Featured crop. (right)'));
+      if($egg['x'] + $egg['width'] > $nest['x'] + $nest['width']){
+        $form_state->setErrorByName($element['#field_name'], t('@egg crop must be nested inside @nest crop.', ['@egg' => $element['#egg'], '@nest' => $element['#nest']]));
         continue;
       }
-      if($thumb['y'] + $thumb['height'] > $featured['y'] + $featured['height']){
-        $form_state->setErrorByName($element['#field_name'], t('Thumb crop must be nested inside Featured crop. (bottom)'));
+      if($egg['y'] + $egg['height'] > $nest['y'] + $nest['height']){
+        $form_state->setErrorByName($element['#field_name'], t('@egg crop must be nested inside @nest crop.', ['@egg' => $element['#egg'], '@nest' => $element['#nest']]));
         continue;
       }
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   *
+   * @return array[]
+   *   The form elements for a single widget for this field.
+   */
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    // Add properties needed by process() method.
+    $element['#nest'] = $this->getSetting('nest');
+    $element['#egg'] = $this->getSetting('egg');
+
+    return parent::formElement($items, $delta, $element, $form, $form_state);
   }
 
 }
