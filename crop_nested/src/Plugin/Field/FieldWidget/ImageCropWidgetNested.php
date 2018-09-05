@@ -2,28 +2,16 @@
 
 namespace Drupal\crop_nested\Plugin\Field\FieldWidget;
 
-use Drupal\Core\Ajax\AjaxResponse;
-use Drupal\Core\Ajax\ReplaceCommand;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\Entity\ConfigEntityStorageInterface;
-use Drupal\Core\Entity\EntityStorageInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Render\ElementInfoManagerInterface;
-use Drupal\image\Plugin\Field\FieldWidget\ImageWidget;
-use Drupal\image_widget_crop\ImageWidgetCropInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\crop\Entity\CropType;
-use Drupal\Core\Render\Element\Select;
 use Drupal\image_widget_crop\Plugin\Field\FieldWidget\ImageCropWidget;
 
 /**
  * Plugin implementation of the 'image_widget_crop_nested' widget.
  *
  * @FieldWidget(
- *   id = "image_widget_crop_beta",
+ *   id = "image_widget_crop_nested",
  *   label = @Translation("ImageWidget crop (nested)"),
  *   field_types = {
  *     "image"
