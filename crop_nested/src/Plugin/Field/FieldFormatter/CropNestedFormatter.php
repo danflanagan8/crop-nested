@@ -2,12 +2,10 @@
 
 namespace Drupal\crop_nested\Plugin\Field\FieldFormatter;
 
-use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\image\Plugin\Field\FieldFormatter\ImageFormatter;
-use \Drupal\Core\Field\EntityReferenceFieldItemListInterface;
-use Drupal\Core\Url;
+use Drupal\crop\Entity\CropType;
 
 /**
  * Plugin implementation of the 'image_crop_nested' formatter.
@@ -77,16 +75,25 @@ class CropNestedFormatter extends ImageFormatter {
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $image_styles = image_style_options(FALSE);
+    $crop_types = CropType::getCropTypeNames();
+    //valid image styles have the exact same machine name as a crop.
+    $valid_image_styles = array();
+    foreach($image_styles as $id=>$name){
+      if(array_key_exists($id, $crop_types)){
+        $valid_image_styles[$id] = $name;
+      }
+    }
     $element = parent::settingsForm($form, $form_state);
     $element['egg_style'] = [
       '#title' => t('Egg image style'),
       '#type' => 'select',
       '#default_value' => $this->getSetting('egg_style'),
       '#empty_option' => t('None (original image)'),
-      '#options' => $image_styles,
+      '#options' => $valid_image_styles,
       '#weight' => -1,
       '#description' => t('The Egg image style should be nested within the Nest image style.'),
     ];
+    $element['image_style']['#options'] = $valid_image_styles;
     $element['image_style']['#weight'] = -2;
     $element['image_style']['#title'] = 'Nest image style';
     return $element;
