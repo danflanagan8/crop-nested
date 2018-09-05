@@ -12,3 +12,11 @@ function crop_nested_theme($existing, $type, $theme, $path) {
     ],
   ];
 }
+
+/**
+ * Implements hook_imce_supported_widgets_alter().
+ */
+function crop_nested_imce_supported_widgets_alter(array &$widgets) {
+  $widgets[] = 'image_widget_crop_nested';
+  return $widgets;
+}
