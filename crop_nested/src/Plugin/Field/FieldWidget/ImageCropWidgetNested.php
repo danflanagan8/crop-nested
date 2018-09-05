@@ -91,6 +91,9 @@ class ImageCropWidgetNested extends ImageCropWidget {
   public function validateNested(array $element, FormStateInterface $form_state) {
     $images = $form_state->getValue($element['#field_name']);
     foreach ($images as $image) {
+      if(!$image['#value']){
+        continue;
+      }
       $crops = $image['image_crop']['crop_wrapper'];
       $nest = $crops[$element['#nest']]['crop_container']['values'];
       $egg = $crops[$element['#egg']]['crop_container']['values'];
