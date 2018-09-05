@@ -1,0 +1,8 @@
+name: Crop Nested
+type: module
+description: 'Provides Widget and Formatter for validating and leveraging nested crops.'
+package: Media
+version: VERSION
+core: 8.x
+dependencies:
+  - crop

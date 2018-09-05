@@ -1,0 +1,13 @@
+.crop-nested {
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.crop-nested.processed,
+.crop-nested.processed img {
+  transition: all 1s;
+}
+
+.crop-nested img {
+  max-width: unset;
+}

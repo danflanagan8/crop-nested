@@ -1,0 +1,10 @@
+crop-nested:
+  version: VERSION
+  css:
+    component:
+      css/style.css: {}
+  js:
+    js/script.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
