@@ -61,7 +61,7 @@ class ImageCropWidgetNested extends ImageCropWidget {
       '#default_value' => $this->getSetting('nest'),
       '#multiple' => FALSE,
       '#required' => FALSE,
-      '#description' => $this->t('The larger crop for which nesting will be validated. This crop will be required.'),
+      '#description' => $this->t('The larger crop for which nesting will be validated.'),
     ];
     $element['egg'] = [
       '#title' => $this->t('Crop Egg'),
@@ -70,7 +70,7 @@ class ImageCropWidgetNested extends ImageCropWidget {
       '#default_value' => $this->getSetting('egg'),
       '#multiple' => FALSE,
       '#required' => FALSE,
-      '#description' => $this->t('The smaller crop for which nesting will be validated. This crop will be required.'),
+      '#description' => $this->t('The smaller crop for which nesting will be validated.'),
     ];
 
     return $element;
@@ -79,21 +79,16 @@ class ImageCropWidgetNested extends ImageCropWidget {
   public function validateNested(array $element, FormStateInterface $form_state) {
     $images = $form_state->getValue($element['#field_name']);
     foreach ($images as $image) {
-      if(!$image['#value']){
-        continue;
-      }
       $crops = $image['image_crop']['crop_wrapper'];
       $nest = $crops[$element['#nest']]['crop_container']['values'];
       $egg = $crops[$element['#egg']]['crop_container']['values'];
 
-      if($nest['crop_applied'] == 0){
-        $form_state->setErrorByName($element['#field_name'], t('Please select a @nest crop.', ['@nest' => $element['#nest']]));
+      if($nest['crop_applied'] == 0 || $egg['crop_applied'] == 0){
+        //Let other validators worry about making these crops required.
         continue;
       }
-      if($egg['crop_applied'] == 0){
-        $form_state->setErrorByName($element['#field_name'], t('Please select a @egg crop.', ['@egg' => $element['#egg']]));
-        continue;
-      }
+      //Both crops are set. Validate accurate nesting.
+
       //These coordinates are TOP LEFT! Not the center!
       if($egg['x'] < $nest['x']){
         $form_state->setErrorByName($element['#field_name'], t('@egg crop must be nested inside @nest crop.', ['@egg' => $element['#egg'], '@nest' => $element['#nest']]));
