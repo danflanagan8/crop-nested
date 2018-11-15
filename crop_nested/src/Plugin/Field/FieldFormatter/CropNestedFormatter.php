@@ -136,7 +136,6 @@ class CropNestedFormatter extends ImageFormatter {
 
       $element['#image'] = $element;
       $element['#theme'] = 'image_crop_nested';
-      $element['#attached']['library'][] = 'crop_nested/crop-nested';
     }
 
     return $elements;
