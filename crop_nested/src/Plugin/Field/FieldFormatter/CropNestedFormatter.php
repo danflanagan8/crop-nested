@@ -128,10 +128,12 @@ class CropNestedFormatter extends ImageFormatter {
       //The x and y values are the CENTER of the crop.
       //We calculate where the top-left corner of egg sits relative to the
       //top-left corner of nest.
-      $element['#item_attributes']['data-crop-x'][] = ($crops[$egg]['position']['x'] - 0.5 * $crops[$egg]['size']['width']) - ($crops[$nest]['position']['x'] - 0.5 * $crops[$nest]['size']['width']);
-      $element['#item_attributes']['data-crop-y'][] = ($crops[$egg]['position']['y'] - 0.5 * $crops[$egg]['size']['height']) - ($crops[$nest]['position']['y'] - 0.5 * $crops[$nest]['size']['height']);
-      $element['#item_attributes']['data-crop-width'][] = $crops[$egg]['size']['width'];
-      $element['#item_attributes']['data-crop-height'][] = $crops[$egg]['size']['height'];
+      $element['#item_attributes']['data-egg-x'][] = ($crops[$egg]['position']['x'] - 0.5 * $crops[$egg]['size']['width']) - ($crops[$nest]['position']['x'] - 0.5 * $crops[$nest]['size']['width']);
+      $element['#item_attributes']['data-egg-y'][] = ($crops[$egg]['position']['y'] - 0.5 * $crops[$egg]['size']['height']) - ($crops[$nest]['position']['y'] - 0.5 * $crops[$nest]['size']['height']);
+      $element['#item_attributes']['data-egg-width'][] = $crops[$egg]['size']['width'];
+      $element['#item_attributes']['data-egg-height'][] = $crops[$egg]['size']['height'];
+      $element['#item_attributes']['data-nest-width'][] = $crops[$nest]['size']['width'];
+      $element['#item_attributes']['data-nest-height'][] = $crops[$nest]['size']['height'];
       $index += 1;
 
       $element['#image'] = $element;
