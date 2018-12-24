@@ -1,0 +1,10 @@
+zoom:
+  css:
+    component:
+      css/zoom.css: {}
+  js:
+    js/zoom.js: {}
+  dependencies:
+      - core/jquery
+      - core/drupal
+      - core/jquery.once

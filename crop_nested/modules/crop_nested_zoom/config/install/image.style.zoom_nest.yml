@@ -1,0 +1,24 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - crop.type.zoom_nest
+  module:
+    - crop
+name: zoom_nest
+label: Zoom Nest
+effects:
+  389fcf4b-08a5-4e46-9795-42e495956ee5:
+    uuid: 389fcf4b-08a5-4e46-9795-42e495956ee5
+    id: crop_crop
+    weight: 1
+    data:
+      crop_type: zoom_nest
+  3ffdf2d0-7604-4068-b93c-a2e21cc897dd:
+    uuid: 3ffdf2d0-7604-4068-b93c-a2e21cc897dd
+    id: image_scale
+    weight: 2
+    data:
+      width: 400
+      height: null
+      upscale: false

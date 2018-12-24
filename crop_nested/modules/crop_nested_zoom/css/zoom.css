@@ -1,0 +1,7 @@
+.crop-nested {
+  overflow: hidden;
+  font-size: 0;
+}
+.crop-nested:not(.zoom) img {
+  transform: none !important;
+}

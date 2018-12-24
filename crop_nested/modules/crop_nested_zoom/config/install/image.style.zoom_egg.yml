@@ -1,0 +1,16 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - crop.type.zoom_egg
+  module:
+    - crop
+name: zoom_egg
+label: Zoom Egg
+effects:
+  ce02a1ef-cabd-4da8-8008-5acd4330559d:
+    uuid: ce02a1ef-cabd-4da8-8008-5acd4330559d
+    id: crop_crop
+    weight: 1
+    data:
+      crop_type: zoom_egg
