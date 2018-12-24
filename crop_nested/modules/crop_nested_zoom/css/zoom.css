@@ -2,6 +2,11 @@
   overflow: hidden;
   font-size: 0;
 }
-.crop-nested:not(.zoom) img {
+
+.crop-nested img {
+  transform-origin: 0 0;
+}
+
+.crop-nested img:not(.zoom) {
   transform: none !important;
 }
