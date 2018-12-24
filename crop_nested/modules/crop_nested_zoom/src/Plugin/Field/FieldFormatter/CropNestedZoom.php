@@ -26,6 +26,7 @@ class CropNestedZoom extends CropNestedFormatter {
   public static function defaultSettings() {
     return [
       'transition_time' => '1000',
+      'begin_zoomed' => false,
     ] + parent::defaultSettings();
   }
 
@@ -40,6 +41,11 @@ class CropNestedZoom extends CropNestedFormatter {
       '#default_value' => $this->getSetting('transition_time'),
       '#description' => t('The time (ms) it takes to complete the zoom.'),
     ];
+    $element['begin_zoomed'] = [
+      '#title' => t('Begin Zoomed In'),
+      '#type' => 'checkbox',
+      '#default_value' => $this->getSetting('begin_zoomed'),
+    ];
     return $element;
   }
 
@@ -51,6 +57,9 @@ class CropNestedZoom extends CropNestedFormatter {
     foreach($elements as &$element){
       $element['#image']['#item_attributes']['style'][] = 'transition: transform ' . $this->getSetting('transition_time') / 1000 . 's';
       $element['#attached']['library'][] = 'crop_nested_zoom/zoom';
+      if($this->getSetting('begin_zoomed')){
+        $element['#image']['#item_attributes']['class'][] = 'zoom';
+      }
     }
     return $elements;
   }
