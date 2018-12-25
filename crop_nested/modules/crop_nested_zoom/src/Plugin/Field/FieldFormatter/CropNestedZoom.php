@@ -28,6 +28,8 @@ class CropNestedZoom extends CropNestedFormatter {
     return [
       'transition_time' => '1000',
       'zoom_in' => true,
+      'trigger' => '',
+      'toggle' => true,
     ] + parent::defaultSettings();
   }
 
@@ -38,6 +40,8 @@ class CropNestedZoom extends CropNestedFormatter {
      $summary = parent::settingsSummary();
      $summary[] = $this->getSetting('transition_time') . 'ms';
      $summary[] = $this->getSetting('zoom_in') ? 'Zoom in' : 'Zoom out';
+     $summary[] = 'Trigger: ' . $this->getSetting('trigger');
+     $summary[] = $this->getSetting('toggle') ? 'Toggle' : 'No toggle';
      return $summary;
    }
 
@@ -58,6 +62,23 @@ class CropNestedZoom extends CropNestedFormatter {
       '#default_value' => $this->getSetting('zoom_in'),
       '#description' => t('As opposed to zoom out.'),
     ];
+    $element['trigger'] = [
+      '#title' => t('Trigger'),
+      '#type' => 'select',
+      '#options' => array(
+        'click' => 'Click',
+        'mouse' => 'Hover',
+      ),
+      '#empty_option' => t('None'),
+      '#default_value' => $this->getSetting('trigger'),
+      '#description' => t('What triggers the zoom effect? If you select "None", presumably you will trigger with custom js.'),
+    ];
+    $element['toggle'] = [
+      '#title' => t('Toggle Zoom'),
+      '#type' => 'checkbox',
+      '#default_value' => $this->getSetting('toggle'),
+      '#description' => t('Can zoom in and out repeated based on trigger.'),
+    ];
     return $element;
   }
 
@@ -74,23 +95,38 @@ class CropNestedZoom extends CropNestedFormatter {
 
     foreach($elements as &$element){
       $item = $element['#item'];
+      //get natural width and height of the image after the image style
+      //has been applied in order to set a max width on the crop-nested element.
       $url = $element['#image']['#url'];
       $dimensions = [
         'width' => $item->width,
         'height' => $item->height,
       ];
       $style->transformDimensions($dimensions, $url);
+      $element['#attributes']['style'][] = 'max-width: ' . $dimensions['width'] . 'px;';
+
+      //based on the nest and egg dimensions and positions, add some inline styles
       $zoom = $element['#image']['#item_attributes']['data-nest-width'][0] / $element['#image']['#item_attributes']['data-egg-width'][0];
-      $x_trans = $zoom * $element['#image']['#item_attributes']['data-egg-x'][0] / $element['#image']['#item_attributes']['data-nest-width'][0] * 100;
-      $y_trans = $zoom * $element['#image']['#item_attributes']['data-egg-y'][0] / $element['#image']['#item_attributes']['data-nest-height'][0] * 100;
+      $x_trans = $element['#image']['#item_attributes']['data-egg-x'][0] / $element['#image']['#item_attributes']['data-egg-width'][0] * 100;
+      $y_trans = $element['#image']['#item_attributes']['data-egg-y'][0] / $element['#image']['#item_attributes']['data-egg-height'][0] * 100;
       $translate = 'translate(-' . $x_trans . '%, -' . $y_trans . '%)';
       $element['#image']['#item_attributes']['style'][] = 'transition: transform ' . $this->getSetting('transition_time') / 1000 . 's;';
       $element['#image']['#item_attributes']['style'][] = 'transform: ' . $translate . ' scale('. $zoom .');';
-      $element['#attributes']['style'][] = 'max-width: ' . $dimensions['width'] . 'px;';
-      $element['#attached']['library'][] = 'crop_nested_zoom/zoom';
+
+      //add classes based on config
       if(!$this->getSetting('zoom_in')){
         $element['#image']['#item_attributes']['class'][] = 'zoom';
       }
+      if($this->getSetting('toggle')){
+        $element['#attributes']['class'][] = 'toggle';
+      }
+      if($this->getSetting('trigger')){
+        $element['#attributes']['class'][] = $this->getSetting('trigger');
+      }
+
+      //a couple things that happen the same way every time
+      $element['#attached']['library'][] = 'crop_nested_zoom/zoom';
+      $element['#attributes']['class'][] = 'crop-nested-zoom';
     }
     return $elements;
   }
