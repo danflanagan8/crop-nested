@@ -8,6 +8,7 @@ function crop_nested_theme($existing, $type, $theme, $path) {
     'image_crop_nested' => [
       'variables' => [
         'image' => NULL,
+        'attributes' => NULL,
       ],
     ],
   ];
