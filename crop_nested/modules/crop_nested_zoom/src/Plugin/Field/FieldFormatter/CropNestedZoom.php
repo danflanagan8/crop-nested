@@ -53,6 +53,7 @@ class CropNestedZoom extends CropNestedFormatter {
     $element['transition_time'] = [
       '#title' => t('Transition Time (ms)'),
       '#type' => 'number',
+      '#required' => TRUE,
       '#default_value' => $this->getSetting('transition_time'),
       '#description' => t('The time (ms) it takes to complete the zoom.'),
     ];

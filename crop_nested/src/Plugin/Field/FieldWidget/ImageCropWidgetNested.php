@@ -60,7 +60,7 @@ class ImageCropWidgetNested extends ImageCropWidget {
       '#options' => $crop_types_options,
       '#default_value' => $this->getSetting('nest'),
       '#multiple' => FALSE,
-      '#required' => FALSE,
+      '#required' => TRUE,
       '#description' => $this->t('The larger crop for which nesting will be validated.'),
     ];
     $element['egg'] = [
@@ -69,7 +69,7 @@ class ImageCropWidgetNested extends ImageCropWidget {
       '#options' => $crop_types_options,
       '#default_value' => $this->getSetting('egg'),
       '#multiple' => FALSE,
-      '#required' => FALSE,
+      '#required' => TRUE,
       '#description' => $this->t('The smaller crop for which nesting will be validated.'),
     ];
 

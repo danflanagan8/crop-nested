@@ -87,8 +87,9 @@ class CropNestedFormatter extends ImageFormatter {
     $element['egg_style'] = [
       '#title' => t('Egg image style'),
       '#type' => 'select',
+      '#required' => TRUE,
       '#default_value' => $this->getSetting('egg_style'),
-      '#empty_option' => t('None (original image)'),
+      '#empty_option' => t('- Select Egg Style -'),
       '#options' => $valid_image_styles,
       '#weight' => -1,
       '#description' => t('The Egg image style should be nested within the Nest image style.'),
@@ -96,6 +97,9 @@ class CropNestedFormatter extends ImageFormatter {
     $element['image_style']['#options'] = $valid_image_styles;
     $element['image_style']['#weight'] = -2;
     $element['image_style']['#title'] = 'Nest image style';
+    $element['image_style']['#required'] = TRUE;
+    $element['image_style']['#empty_option'] = t('- Select Nest Style -');
+
     return $element;
   }
 
