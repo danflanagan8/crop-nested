@@ -107,9 +107,9 @@ class CropNestedZoom extends CropNestedFormatter {
       $element['#attributes']['style'][] = 'max-width: ' . $dimensions['width'] . 'px;';
 
       //based on the nest and egg dimensions and positions, add some inline styles
-      $zoom = $element['#image']['#item_attributes']['data-nest-width'][0] / $element['#image']['#item_attributes']['data-egg-width'][0];
-      $x_trans = $element['#image']['#item_attributes']['data-egg-x'][0] / $element['#image']['#item_attributes']['data-egg-width'][0] * 100;
-      $y_trans = $element['#image']['#item_attributes']['data-egg-y'][0] / $element['#image']['#item_attributes']['data-egg-height'][0] * 100;
+      $zoom = $element['#image']['#item_attributes']['data-nest-width'] / $element['#image']['#item_attributes']['data-egg-width'];
+      $x_trans = $element['#image']['#item_attributes']['data-egg-x'] / $element['#image']['#item_attributes']['data-egg-width'] * 100;
+      $y_trans = $element['#image']['#item_attributes']['data-egg-y'] / $element['#image']['#item_attributes']['data-egg-height'] * 100;
       $translate = 'translate(-' . $x_trans . '%, -' . $y_trans . '%)';
       $element['#image']['#item_attributes']['style'][] = 'transition: transform ' . $this->getSetting('transition_time') / 1000 . 's;';
       $element['#image']['#item_attributes']['style'][] = 'transform: ' . $translate . ' scale('. $zoom .');';

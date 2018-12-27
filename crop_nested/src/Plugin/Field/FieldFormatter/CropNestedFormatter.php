@@ -119,32 +119,39 @@ class CropNestedFormatter extends ImageFormatter {
     foreach($elements as &$element){
       $image = $images[$index];
       $image_uri = $image->getFileUri();
-      foreach($crop_types as $crop_type){
-        $crop = $crop_storage->getCrop($image_uri, $crop_type->bundle());
-        if($crop){
-         $crops[$crop_type->bundle()] = array(
-           'size' => $crop->size(),
-           'position' => $crop->position(),
-         );
-        }
+      $crops = array();
+      //nest
+      if($nest_crop = $crop_storage->getCrop($image_uri, $nest)){
+       $crops[$nest] = array(
+         'size' => $nest_crop->size(),
+         'position' => $nest_crop->position(),
+       );
+      }
+      //egg
+      if($egg_crop = $crop_storage->getCrop($image_uri, $egg)){
+       $crops[$egg] = array(
+         'size' => $egg_crop->size(),
+         'position' => $egg_crop->position(),
+       );
       }
       //calculate where the thumb crop sits within the featured crop
-      //The x and y values are the CENTER of the crop.
+      //The x and y values returned from crop_storage are the CENTER of the crop.
       //We calculate where the top-left corner of egg sits relative to the
-      //top-left corner of nest.
+      //top-left corner of nest: that's data-egg-x/data-egg-y.
       if(isset($crops[$egg]) && isset($crops[$nest])){
-        $element['#item_attributes']['data-egg-x'][] = ($crops[$egg]['position']['x'] - 0.5 * $crops[$egg]['size']['width']) - ($crops[$nest]['position']['x'] - 0.5 * $crops[$nest]['size']['width']);
-        $element['#item_attributes']['data-egg-y'][] = ($crops[$egg]['position']['y'] - 0.5 * $crops[$egg]['size']['height']) - ($crops[$nest]['position']['y'] - 0.5 * $crops[$nest]['size']['height']);
-        $element['#item_attributes']['data-egg-width'][] = $crops[$egg]['size']['width'];
-        $element['#item_attributes']['data-egg-height'][] = $crops[$egg]['size']['height'];
-        $element['#item_attributes']['data-nest-width'][] = $crops[$nest]['size']['width'];
-        $element['#item_attributes']['data-nest-height'][] = $crops[$nest]['size']['height'];
+        $element['#item_attributes']['data-egg-x'] = ($crops[$egg]['position']['x'] - 0.5 * $crops[$egg]['size']['width']) - ($crops[$nest]['position']['x'] - 0.5 * $crops[$nest]['size']['width']);
+        $element['#item_attributes']['data-egg-y'] = ($crops[$egg]['position']['y'] - 0.5 * $crops[$egg]['size']['height']) - ($crops[$nest]['position']['y'] - 0.5 * $crops[$nest]['size']['height']);
+        $element['#item_attributes']['data-egg-width'] = $crops[$egg]['size']['width'];
+        $element['#item_attributes']['data-egg-height'] = $crops[$egg]['size']['height'];
+        $element['#item_attributes']['data-nest-width'] = $crops[$nest]['size']['width'];
+        $element['#item_attributes']['data-nest-height'] = $crops[$nest]['size']['height'];
       }
-      $index += 1;
 
       $element['#image'] = $element;
       $element['#theme'] = 'image_crop_nested';
       $element['#attributes']['class'][] = 'crop-nested';
+
+      $index += 1;
     }
 
     return $elements;
